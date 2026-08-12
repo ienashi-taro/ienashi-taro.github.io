@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<!--
+==========================================================================
+  たろ リンクページ
+  --------------------------------------------------------------------
+  ■ 直すときはここだけ見ればOK
+    ・リンク先URL / ボタンの文字 → 下の「▼ ここからボタン4つ」のところ
+    ・名前・ひとこと            → 下の「▼ ここからプロフィール」のところ
+    ・アイコン画像              → assets/avatar.jpg を置き換えるだけ
+  ※ 画像が無い間は「た」の文字アイコンが自動で出ます
+==========================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07070a">
+<title>家無しタロ</title>
+<meta name="description" content="家無しタロのリンクまとめ。オープンチャット・ラジオのお便り・カラオケ採点予想・配信企画の要望はこちらから。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="家無しタロ">
+<meta property="og:description" content="オープンチャット・ラジオのお便り・カラオケ採点予想・配信企画の要望はこちらから。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0b10'/><text y='70' x='50' text-anchor='middle' font-size='58' fill='%23e6d195' font-family='serif'>タ</text></svg>">
+
+<style>
+/* ====================== 配色・基本設定 ====================== */
+:root{
+  --bg-0:#050507;
+  --bg-1:#0c0c11;
+  --gold-deep:#7d6426;
+  --gold:#c9a227;
+  --gold-light:#f0dfab;
+  --text:#f3f0e9;
+  --muted:#9d978a;
+  --card-w:min(460px, 100%);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  min-height:100svh;
+  color:var(--text);
+  font-family:-apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+              "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  background:
+    radial-gradient(130% 78% at 50% -12%, rgba(201,162,39,.20), transparent 62%),
+    radial-gradient(100% 62% at 50% 112%, rgba(201,162,39,.10), transparent 60%),
+    linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 46%, #07070b 100%);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+
+/* 上下に走る、ごく薄い金のヴィネット */
+body::after{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+  z-index:0;
+}
+
+/* ====================== 金色の光の粒 ====================== */
+.dust{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.dust i{
+  position:absolute;
+  display:block;
+  width:3px; height:3px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(240,223,171,.95) 0%, rgba(201,162,39,.45) 45%, transparent 72%);
+  opacity:0;
+  animation:rise linear infinite;
+}
+@keyframes rise{
+  0%   { transform:translate3d(0, 12vh, 0) scale(.6); opacity:0; }
+  12%  { opacity:.75; }
+  80%  { opacity:.5; }
+  100% { transform:translate3d(var(--drift, 14px), -108vh, 0) scale(1.15); opacity:0; }
+}
+
+/* ====================== レイアウト ====================== */
+.page{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:var(--card-w);
+  margin:0 auto;
+  padding:
+    calc(env(safe-area-inset-top) + 56px)
+    22px
+    calc(env(safe-area-inset-bottom) + 44px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* ====================== プロフィール ====================== */
+.avatar-frame{
+  position:relative;
+  width:104px; height:104px;
+  border-radius:50%;
+  display:grid; place-items:center;
+  background:linear-gradient(160deg, rgba(240,223,171,.55), rgba(125,100,38,.25) 45%, rgba(240,223,171,.4));
+  padding:1.5px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.6), 0 10px 34px rgba(201,162,39,.16);
+  animation:fadeUp .8s cubic-bezier(.2,.7,.3,1) both;
+}
+.avatar-frame::before{
+  content:"";
+  position:absolute; inset:-9px;
+  border-radius:50%;
+  border:1px solid rgba(201,162,39,.22);
+}
+.avatar-inner{
+  width:100%; height:100%;
+  border-radius:50%;
+  overflow:hidden;
+  background:linear-gradient(180deg,#16161d,#0b0b10);
+  display:grid; place-items:center;
+}
+.avatar-inner img{ width:100%; height:100%; object-fit:cover; display:block; }
+.avatar-fallback{
+  font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;
+  font-size:44px;
+  line-height:1;
+  background:linear-gradient(180deg, var(--gold-light), var(--gold));
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent;
+  padding-bottom:4px;
+}
+
+.name{
+  margin:22px 0 0;
+  font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;
+  font-size:30px;
+  font-weight:500;
+  letter-spacing:.42em;
+  text-indent:.42em;
+  background:linear-gradient(180deg, #fdf6e2 0%, var(--gold-light) 42%, var(--gold) 100%);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent;
+  animation:fadeUp .8s .06s cubic-bezier(.2,.7,.3,1) both;
+}
+
+.rule{
+  position:relative;
+  width:140px; height:1px;
+  margin:20px 0 18px;
+  background:linear-gradient(90deg, transparent, rgba(230,206,140,.95) 35%, rgba(230,206,140,.95) 65%, transparent);
+  animation:fadeUp .8s .12s cubic-bezier(.2,.7,.3,1) both;
+}
+/* 中央のひし形の飾り */
+.rule::after{
+  content:"";
+  position:absolute;
+  top:50%; left:50%;
+  width:5px; height:5px;
+  transform:translate(-50%,-50%) rotate(45deg);
+  background:linear-gradient(135deg, var(--gold-light), var(--gold));
+  box-shadow:0 0 8px rgba(240,223,171,.55);
+}
+
+.tagline{
+  margin:0 0 40px;
+  font-size:12.5px;
+  letter-spacing:.2em;
+  color:var(--muted);
+  animation:fadeUp .8s .18s cubic-bezier(.2,.7,.3,1) both;
+}
+
+/* ====================== リンクカード ====================== */
+.links{ width:100%; display:flex; flex-direction:column; gap:14px; }
+
+.card{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:17px 18px;
+  border-radius:15px;
+  text-decoration:none;
+  color:var(--text);
+  overflow:hidden;
+  isolation:isolate;
+  border:1px solid rgba(201,162,39,.30);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.062), rgba(255,255,255,.018));
+  -webkit-backdrop-filter:blur(12px) saturate(130%);
+  backdrop-filter:blur(12px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 0 -1px 0 rgba(0,0,0,.35),
+    0 14px 30px rgba(0,0,0,.42);
+  transition:transform .22s cubic-bezier(.2,.7,.3,1), border-color .22s, box-shadow .22s;
+  animation:fadeUp .75s cubic-bezier(.2,.7,.3,1) both;
+  -webkit-tap-highlight-color:transparent;
+}
+.card:nth-child(1){ animation-delay:.24s; }
+.card:nth-child(2){ animation-delay:.31s; }
+.card:nth-child(3){ animation-delay:.38s; }
+.card:nth-child(4){ animation-delay:.45s; }
+
+/* カードの上を斜めに走る光沢 */
+.card::before{
+  content:"";
+  position:absolute; top:0; left:-70%;
+  width:55%; height:100%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.10), transparent);
+  transform:skewX(-18deg);
+  transition:left .55s ease;
+  z-index:-1;
+}
+.card:hover::before,
+.card:focus-visible::before{ left:130%; }
+
+.card:hover,
+.card:focus-visible{
+  border-color:rgba(240,223,171,.62);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.11),
+    inset 0 -1px 0 rgba(0,0,0,.35),
+    0 16px 38px rgba(0,0,0,.5),
+    0 0 0 1px rgba(201,162,39,.16);
+  transform:translateY(-2px);
+}
+.card:focus-visible{ outline:2px solid rgba(240,223,171,.7); outline-offset:3px; }
+.card:active{ transform:translateY(1px) scale(.994); }
+
+.card .ico{
+  flex:0 0 auto;
+  width:38px; height:38px;
+  border-radius:11px;
+  display:grid; place-items:center;
+  background:linear-gradient(180deg, rgba(201,162,39,.20), rgba(201,162,39,.06));
+  border:1px solid rgba(201,162,39,.32);
+}
+.card .ico svg{ width:19px; height:19px; stroke:var(--gold-light); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+
+.card .txt{ flex:1 1 auto; min-width:0; }
+.card .ttl{
+  display:block;
+  font-size:15.5px;
+  font-weight:600;
+  letter-spacing:.045em;
+  line-height:1.45;
+}
+.card .sub{
+  display:block;
+  margin-top:3px;
+  font-size:11.5px;
+  letter-spacing:.03em;
+  color:var(--muted);
+  line-height:1.45;
+}
+
+.card .arw{
+  flex:0 0 auto;
+  width:16px; height:16px;
+  stroke:rgba(201,162,39,.75);
+  fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round;
+  transition:transform .22s, stroke .22s;
+}
+.card:hover .arw{ transform:translateX(3px); stroke:var(--gold-light); }
+
+/* ====================== フッター ====================== */
+.foot{
+  margin-top:44px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  animation:fadeUp .8s .55s cubic-bezier(.2,.7,.3,1) both;
+}
+.foot .rule{ margin:0; width:76px; }
+.foot p{
+  margin:0;
+  font-size:10.5px;
+  letter-spacing:.24em;
+  color:rgba(157,151,138,.72);
+}
+
+/* ====================== アニメーション ====================== */
+@keyframes fadeUp{
+  from{ opacity:0; transform:translateY(14px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  .dust{ display:none; }
+}
+
+/* 小さい画面の微調整 */
+@media (max-width:359px){
+  .name{ font-size:26px; }
+  .card{ padding:15px 14px; gap:12px; }
+  .card .ttl{ font-size:14.5px; }
+}
+</style>
+</head>
+
+<body>
+<div class="dust" aria-hidden="true"></div>
+
+<main class="page">
+
+  <!-- ================= ▼ ここからプロフィール ================= -->
+  <div class="avatar-frame">
+    <div class="avatar-inner">
+      <!-- assets/avatar.jpg を置くと自動でこの画像に切り替わります -->
+      <img src="assets/avatar.jpg" alt="家無しタロ"
+           onerror="this.remove();document.getElementById('av-fb').hidden=false;">
+      <span class="avatar-fallback" id="av-fb" hidden>タ</span>
+    </div>
+  </div>
+
+  <h1 class="name">家無しタロ</h1>
+  <div class="rule"></div>
+  <p class="tagline">TikTok LIVE 配信中</p>
+  <!-- ================= ▲ ここまでプロフィール ================= -->
+
+
+  <!-- ================= ▼ ここからボタン4つ ================= -->
+  <nav class="links">
+
+    <!-- ① たろオープンチャット -->
+    <a class="card" target="_blank" rel="noopener noreferrer"
+       href="https://line.me/ti/g2/fd73E990qsINrnBuT022FmJg58ehZpLYjdc8jg?utm_source=invitation&amp;utm_medium=link_copy&amp;utm_campaign=default">
+      <span class="ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.3 9.6 9.6 0 0 1-2.7-.4L4 21l1.3-3.6A8 8 0 0 1 3 11.5C3 7 7 3.5 12 3.5s9 3.5 9 8Z"/></svg>
+      </span>
+      <span class="txt">
+        <span class="ttl">たろオープンチャット</span>
+        <span class="sub">「タロの共有部屋」に参加する</span>
+      </span>
+      <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </a>
+
+    <!-- ② たろラジオのお便り -->
+    <a class="card" target="_blank" rel="noopener noreferrer"
+       href="https://forms.gle/op7jhxAUDzFeRDsdA">
+      <span class="ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.2"/><path d="m3.6 6.4 7.3 5.3a2 2 0 0 0 2.2 0l7.3-5.3"/></svg>
+      </span>
+      <span class="txt">
+        <span class="ttl">たろラジオのお便り</span>
+        <span class="sub">お便りを送る</span>
+      </span>
+      <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </a>
+
+    <!-- ③ カラオケ採点予想 -->
+    <a class="card" target="_blank" rel="noopener noreferrer"
+       href="https://forms.gle/kYb2imBCkpKLpvoS9">
+      <span class="ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/><path d="M8.5 21h7"/></svg>
+      </span>
+      <span class="txt">
+        <span class="ttl">カラオケ採点予想</span>
+        <span class="sub">点数を予想して参加する</span>
+      </span>
+      <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </a>
+
+    <!-- ④ 配信企画の要望 -->
+    <a class="card" target="_blank" rel="noopener noreferrer"
+       href="https://forms.gle/giLrWJyunDwtXA3R6">
+      <span class="ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.5.4.8 1 .9 1.6l.1.6h5.2l.1-.6c.1-.6.4-1.2.9-1.6A6 6 0 0 0 12 3Z"/></svg>
+      </span>
+      <span class="txt">
+        <span class="ttl">配信企画の要望</span>
+        <span class="sub">やってほしい企画を送る</span>
+      </span>
+      <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </a>
+
+  </nav>
+  <!-- ================= ▲ ここまでボタン4つ ================= -->
+
+
+  <footer class="foot">
+    <div class="rule"></div>
+    <p>家 無 し タ ロ</p>
+  </footer>
+
+</main>
+
+<script>
+/* 金色の光の粒を生成（動きを減らす設定の端末では作らない） */
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var box = document.querySelector('.dust');
+  if (!box) return;
+  var n = window.innerWidth < 480 ? 16 : 26;
+  var frag = document.createDocumentFragment();
+  for (var i = 0; i < n; i++) {
+    var p = document.createElement('i');
+    var size = (Math.random() * 2.4 + 1.4).toFixed(2);
+    p.style.width = p.style.height = size + 'px';
+    p.style.left = (Math.random() * 100).toFixed(2) + '%';
+    p.style.bottom = '-8vh';
+    p.style.setProperty('--drift', (Math.random() * 90 - 45).toFixed(0) + 'px');
+    p.style.animationDuration = (Math.random() * 16 + 16).toFixed(1) + 's';
+    p.style.animationDelay = (-Math.random() * 32).toFixed(1) + 's';
+    frag.appendChild(p);
+  }
+  box.appendChild(frag);
+})();
+</script>
+</body>
+</html>
