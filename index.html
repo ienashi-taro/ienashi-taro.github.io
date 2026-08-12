@@ -242,13 +242,33 @@ body::after{
   max-width:var(--card-w);
   margin:0 auto;
   padding:
-    calc(env(safe-area-inset-top) + 56px)
+    calc(env(safe-area-inset-top) + 40px)
     22px
-    calc(env(safe-area-inset-bottom) + 44px);
+    calc(env(safe-area-inset-bottom) + 32px);
   display:flex;
   flex-direction:column;
   align-items:center;
 }
+
+/* 画面いちばん上の額装線。
+   閉じていない余白は「何も無い」に見え、閉じた余白は「意図的に空けた」に見える */
+.page::before{
+  content:"";
+  position:fixed;
+  top:10px; left:0; right:0;
+  height:1px;
+  pointer-events:none;
+  z-index:0;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(201,162,39,.30) 26%,
+    rgba(240,223,171,.46) 50%,
+    rgba(201,162,39,.30) 74%,
+    transparent 100%);
+  opacity:0;
+  animation:frameIn 1.4s .25s var(--e-soft) forwards;
+}
+@keyframes frameIn{ to{ opacity:1; } }
 
 /* ====================== プロフィール ====================== */
 .avatar-frame{
@@ -346,7 +366,7 @@ body::after{
 .rule{
   position:relative;
   width:140px; height:1px;
-  margin:20px 0 18px;
+  margin:16px 0 14px;
 }
 .rule::before{
   content:"";
@@ -383,10 +403,61 @@ body::after{
   100%{ opacity:1; transform:translate(-50%,-50%) rotate(45deg) scale(1); }
 }
 
+/* TikTok本体への帰り道。
+   ここが無いと、LINEや友人からURLだけ受け取った人が本人に永久に辿り着けない。
+   「マーク＋TikTokの文字＋@表記」の3点が並んで初めて一瞬でTikTokだと確定する。
+   カードとは明確に格を下げた脇役の見た目にして、4枚のボタンより目立たせない */
+.tt-link{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin:0 0 12px;
+  padding:6px 12px 6px 10px;
+  border-radius:999px;
+  text-decoration:none;
+  border:1px solid rgba(201,162,39,.30);
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 6px 16px rgba(0,0,0,.32);
+  transition:border-color .22s, transform .22s var(--e-out), box-shadow .22s;
+  animation:fadeUp .7s .74s var(--e-out) backwards;
+  -webkit-tap-highlight-color:transparent;
+}
+.tt-link .tt-mark{ width:13px; height:13px; flex:0 0 auto; fill:var(--gold-light); }
+.tt-link .tt-name{
+  font-size:11px; letter-spacing:.14em; font-weight:600;
+  color:rgba(240,223,171,.92);
+}
+.tt-link .tt-handle{
+  font-size:11px; letter-spacing:.02em;
+  color:var(--muted);
+  max-width:15em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.tt-link .tt-arw{
+  width:11px; height:11px; flex:0 0 auto;
+  stroke:rgba(201,162,39,.7); fill:none; stroke-width:2.2;
+  stroke-linecap:round; stroke-linejoin:round;
+  transition:translate .22s var(--e-out), stroke .22s;
+}
+.tt-link:hover, .tt-link:focus-visible{
+  border-color:rgba(240,223,171,.6);
+  transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09), 0 8px 20px rgba(0,0,0,.38);
+}
+.tt-link:hover .tt-arw{ translate:2px 0; stroke:var(--gold-light); }
+.tt-link:focus-visible{ outline:2px solid rgba(240,223,171,.7); outline-offset:3px; }
+.tt-link:active{
+  transform:translateY(1px) scale(.985);
+  border-color:rgba(240,223,171,.78);
+  transition-duration:.08s;
+}
+
 .tagline{
-  margin:0 0 40px;
+  margin:0 0 30px;
   font-size:12.5px;
-  letter-spacing:.2em;
+  letter-spacing:.16em;
+  line-height:1.7;
   color:var(--muted);
   animation:fadeUp .72s .86s var(--e-out) backwards;
 }
@@ -504,7 +575,14 @@ body::after{
 }
 .card:active .ico svg{ stroke:var(--gold-spec); }
 
-.card .txt{ flex:1 1 auto; min-width:0; }
+/* アイコンと文字の間に極細の金の縦線。
+   「1本の横棒」から「メニューの一行」に格上げされる。高さは1pxも増えない */
+.card .txt{
+  flex:1 1 auto;
+  min-width:0;
+  padding-left:13px;
+  border-left:1px solid rgba(201,162,39,.16);
+}
 .card .ttl{
   display:block;
   font-size:15.5px;
@@ -512,14 +590,48 @@ body::after{
   letter-spacing:.045em;
   line-height:1.45;
 }
+/* 説明文の右に遊んでいた61〜156pxの空白を、情報に変える。
+   「無料か」「名前がバレるか」「何分かかるか」は押す前の不安そのもの */
 .card .sub{
-  display:block;
+  display:flex;
+  align-items:baseline;
   margin-top:3px;
   font-size:11.5px;
   letter-spacing:.03em;
   color:var(--muted);
   line-height:1.45;
 }
+.card .sub-t{
+  font-weight:inherit;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.card .tag{
+  flex:0 0 auto;
+  font-style:normal;
+  font-size:10px;
+  letter-spacing:.1em;
+  line-height:inherit;
+  margin-left:9px;
+  padding-left:9px;
+  border-left:1px solid rgba(201,162,39,.30);
+  color:rgba(240,223,171,.72);
+  white-space:nowrap;
+}
+
+/* 1枚目だけ主役にする。4枚が同じ大きさだと「たまたま並んだ4つ」に見える。
+   ⚠️ .links の直下の子はカード4枚だけに保つこと。
+      見出し等を差し込むと :nth-child がずれ、いちばん暗いはずの4枚目が
+      最も明るくなって光源設計が反転し、登場順も壊れる */
+.card.is-hero{
+  padding:20px 18px;
+  border-color:rgba(240,223,171,.46);
+}
+.card.is-hero .ico{ width:44px; height:44px; border-radius:13px; }
+.card.is-hero .ico svg{ width:21px; height:21px; }
+.card.is-hero .ttl{ font-size:16.5px; }
 
 /* 矢印は常時ごく小さく「招く」。スマホには hover が無いので、
    押せることを伝える手段がこれしかない。4枚をずらして機械的に見せない
@@ -547,7 +659,7 @@ body::after{
 
 /* ====================== フッター ====================== */
 .foot{
-  margin-top:44px;
+  margin-top:30px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -581,12 +693,79 @@ body::after{
   body::before{ animation:none; opacity:.55; }
 }
 
-/* 小さい画面の微調整 */
+/* 縦の短い端末（iPhone SE・標準的なAndroid）でも4枚目を画面内に収める。
+   ここを外すと4枚目が下に隠れ、スクロールしない人には押されない */
+@media (max-height:740px){
+  .page{
+    padding-top:calc(env(safe-area-inset-top) + 18px);
+    padding-bottom:calc(env(safe-area-inset-bottom) + 20px);
+  }
+  .avatar-frame{ width:88px; height:88px; }
+  .avatar-fallback{ font-size:38px; }
+  .name{ margin-top:16px; font-size:27px; }
+  .rule{ margin:12px 0 11px; }
+  .tt-link{ margin-bottom:10px; }
+  .tagline{ margin-bottom:18px; }
+  .links{ gap:11px; }
+  .card{ padding:14px 18px; }
+  .card.is-hero{ padding:16px 18px; }
+  .foot{ margin-top:22px; }
+}
+
+/* 縦が特に短い端末（iPhone SE 第1世代 320×568 など）。
+   ここまで詰めて、ようやく4枚目が画面内に入る */
+@media (max-height:600px){
+  .page{ padding-top:calc(env(safe-area-inset-top) + 12px); }
+  .avatar-frame{ width:74px; height:74px; }
+  .avatar-fallback{ font-size:32px; }
+  .avatar-frame::before, .avatar-frame::after{ inset:-7px; }
+  .name{ margin-top:12px; font-size:24px; }
+  .rule{ margin:9px 0 9px; }
+  .tt-link{ margin-bottom:8px; }
+  .tagline{ margin-bottom:14px; }
+  .links{ gap:10px; }
+  .foot{ margin-top:18px; }
+}
+
+/* TikTokアプリ内ブラウザは上下がアプリのUIで削られる。
+   小さい端末だと実質の高さが560pxを切るので、ここで最後の圧縮をかける */
+@media (max-height:560px){
+  .page{ padding-top:calc(env(safe-area-inset-top) + 8px); }
+  .avatar-frame{ width:60px; height:60px; }
+  .avatar-fallback{ font-size:26px; }
+  .avatar-frame::before, .avatar-frame::after{ inset:-6px; }
+  .name{ margin-top:9px; font-size:21px; letter-spacing:.2em; text-indent:.2em; }
+  .rule{ margin:7px 0 7px; width:110px; }
+  .tt-link{ margin-bottom:7px; padding:5px 10px 5px 8px; }
+  .tagline{ margin-bottom:11px; font-size:11.5px; }
+  .links{ gap:8px; }
+  .card{ padding:11px 16px; }
+  .card.is-hero{ padding:13px 16px; }
+  .card .ico{ width:34px; height:34px; }
+  .card.is-hero .ico{ width:38px; height:38px; }
+  .foot{ margin-top:14px; }
+}
+
+/* 小さい画面の微調整。
+   ★ .card.is-hero .ttl は通常の .card .ttl より優先度が高いので、
+     ここで明示的に上書きしないと「たろオープンチャット」が2行に折り返す（実測で確認済み） */
 @media (max-width:359px){
   .name{ font-size:25px; letter-spacing:.24em; text-indent:.24em; }
   .rule{ width:120px; }
-  .card{ padding:15px 14px; gap:12px; }
-  .card .ttl{ font-size:14.5px; }
+  .card{ padding:15px 13px; gap:11px; }
+  .card.is-hero{ padding:17px 13px; }
+  .card .ico{ width:36px; height:36px; }
+  .card .ico svg{ width:18px; height:18px; }
+  .card.is-hero .ico{ width:40px; height:40px; border-radius:12px; }
+  .card.is-hero .ico svg{ width:19px; height:19px; }
+  .card .txt{ padding-left:10px; }
+  .card .ttl{ font-size:14px; letter-spacing:.01em; }
+  .card.is-hero .ttl{ font-size:14.5px; }
+  .card .sub{ font-size:11px; }
+  .card .tag{ font-size:9.5px; margin-left:7px; padding-left:7px; letter-spacing:.06em; }
+  .tt-link{ padding:6px 10px 6px 9px; gap:6px; }
+  .tt-link .tt-name, .tt-link .tt-handle{ font-size:10.5px; }
+  .tt-link .tt-handle{ max-width:12em; }
 }
 </style>
 </head>
@@ -608,22 +787,33 @@ body::after{
 
   <h1 class="name">家無しタロ</h1>
   <div class="rule"></div>
-  <p class="tagline">TikTok LIVE 配信中</p>
+
+  <!-- TikTok本体へ戻る導線。ハンドルを変えたら href と表示の両方を直すこと -->
+  <a class="tt-link" target="_blank" rel="noopener noreferrer"
+     href="https://www.tiktok.com/@nohausetarooo">
+    <svg class="tt-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 3h-3.2v13.1a2.7 2.7 0 1 1-2.7-2.7c.2 0 .4 0 .6.1v-3.2a6 6 0 0 0-.6 0 5.9 5.9 0 1 0 5.9 5.9V9.6a7.3 7.3 0 0 0 4.3 1.4V7.8a4.3 4.3 0 0 1-4.3-4.3V3Z"/></svg>
+    <span class="tt-name">TikTok</span>
+    <span class="tt-handle">@nohausetarooo</span>
+    <svg class="tt-arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+  </a>
+
+  <!-- ★ 日付・回数・頻度（毎日/週3など）は書かないこと。守れない日が来た瞬間にウソになる -->
+  <p class="tagline">TikTok で企画とカラオケの生配信</p>
   <!-- ================= ▲ ここまでプロフィール ================= -->
 
 
   <!-- ================= ▼ ここからボタン4つ ================= -->
   <nav class="links">
 
-    <!-- ① たろオープンチャット -->
-    <a class="card" target="_blank" rel="noopener noreferrer"
+    <!-- ① たろオープンチャット（is-hero＝主役。唯一「再訪」につながる導線なのでここを一番強くする） -->
+    <a class="card is-hero" target="_blank" rel="noopener noreferrer"
        href="https://line.me/ti/g2/fd73E990qsINrnBuT022FmJg58ehZpLYjdc8jg?utm_source=invitation&amp;utm_medium=link_copy&amp;utm_campaign=default">
       <span class="ico" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.3 9.6 9.6 0 0 1-2.7-.4L4 21l1.3-3.6A8 8 0 0 1 3 11.5C3 7 7 3.5 12 3.5s9 3.5 9 8Z"/></svg>
       </span>
       <span class="txt">
         <span class="ttl">たろオープンチャット</span>
-        <span class="sub">「タロの共有部屋」に参加する</span>
+        <span class="sub"><b class="sub-t">タロの共有部屋</b><i class="tag">無料・匿名OK</i></span>
       </span>
       <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
     </a>
@@ -636,7 +826,9 @@ body::after{
       </span>
       <span class="txt">
         <span class="ttl">たろラジオのお便り</span>
-        <span class="sub">お便りを送る</span>
+        <!-- タグはフォームの実際の設問に基づく。設問を変えたらタグも見直すこと
+             （現在: ペンネーム＋お便り の2問） -->
+        <span class="sub"><b class="sub-t">お便りを送る</b><i class="tag">ペンネームOK</i></span>
       </span>
       <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
     </a>
@@ -649,7 +841,8 @@ body::after{
       </span>
       <span class="txt">
         <span class="ttl">カラオケ採点予想</span>
-        <span class="sub">点数を予想して参加する</span>
+        <!-- 現在: TikTokアカウント名＋予想点数 の2問（匿名では出せない） -->
+        <span class="sub"><b class="sub-t">点数を予想して参加する</b><i class="tag">30秒</i></span>
       </span>
       <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
     </a>
@@ -662,7 +855,8 @@ body::after{
       </span>
       <span class="txt">
         <span class="ttl">配信企画の要望</span>
-        <span class="sub">やってほしい企画を送る</span>
+        <!-- 現在: TikTokアカウント名＋企画要望 の2問（匿名では出せない） -->
+        <span class="sub"><b class="sub-t">見たい企画を送る</b><i class="tag">1行OK</i></span>
       </span>
       <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
     </a>
